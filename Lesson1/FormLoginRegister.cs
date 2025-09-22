@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
-
+//test
 namespace Quizmester
 {
     public partial class FormLoginRegister : Form
