@@ -56,7 +56,7 @@ namespace Quizmester
                     return;
                 }
 
-                // Als hij nog niet bestaat → registreren
+                // Als hij nog niet bestaat → registrere
                 string insertQuery = "INSERT INTO Player (PlayerName, Password) VALUES (@username, @password)";
                 SqlCommand insertCmd = new SqlCommand(insertQuery, con);
                 insertCmd.Parameters.AddWithValue("@username", txtUsername.Text);
