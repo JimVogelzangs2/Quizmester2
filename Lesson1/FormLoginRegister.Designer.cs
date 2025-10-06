@@ -34,65 +34,92 @@
             txtPassword = new TextBox();
             lblUsername = new Label();
             lblPassword = new Label();
+            lblTitle = new Label();
             SuspendLayout();
-            // 
+            //
+            // lblTitle
+            //
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTitle.Location = new Point(300, 50);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(200, 32);
+            lblTitle.TabIndex = 6;
+            lblTitle.Text = "Quizmester Login";
+            lblTitle.TextAlign = ContentAlignment.MiddleCenter;
+            //
             // btnLogin
-            // 
-            btnLogin.Location = new Point(46, 198);
+            //
+            btnLogin.BackColor = Color.FromArgb(0, 123, 255);
+            btnLogin.FlatStyle = FlatStyle.Flat;
+            btnLogin.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
+            btnLogin.ForeColor = Color.White;
+            btnLogin.Location = new Point(325, 250);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(94, 29);
+            btnLogin.Size = new Size(150, 40);
             btnLogin.TabIndex = 0;
             btnLogin.Text = "Login";
-            btnLogin.UseVisualStyleBackColor = true;
+            btnLogin.UseVisualStyleBackColor = false;
             btnLogin.Click += btnLogin_Click;
-            // 
+            //
             // btnRegister
-            // 
-            btnRegister.Location = new Point(146, 198);
+            //
+            btnRegister.BackColor = Color.FromArgb(40, 167, 69);
+            btnRegister.FlatStyle = FlatStyle.Flat;
+            btnRegister.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
+            btnRegister.ForeColor = Color.White;
+            btnRegister.Location = new Point(325, 300);
             btnRegister.Name = "btnRegister";
-            btnRegister.Size = new Size(94, 29);
+            btnRegister.Size = new Size(150, 40);
             btnRegister.TabIndex = 1;
             btnRegister.Text = "Register";
-            btnRegister.UseVisualStyleBackColor = true;
+            btnRegister.UseVisualStyleBackColor = false;
             btnRegister.Click += btnRegister_Click;
-            // 
+            //
             // txtUsername
-            // 
-            txtUsername.Location = new Point(46, 86);
+            //
+            txtUsername.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            txtUsername.Location = new Point(325, 150);
             txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(125, 27);
+            txtUsername.Size = new Size(150, 30);
             txtUsername.TabIndex = 2;
-            // 
+            //
             // txtPassword
-            // 
-            txtPassword.Location = new Point(46, 146);
+            //
+            txtPassword.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            txtPassword.Location = new Point(325, 200);
             txtPassword.Name = "txtPassword";
-            txtPassword.Size = new Size(125, 27);
+            txtPassword.PasswordChar = '*';
+            txtPassword.Size = new Size(150, 30);
             txtPassword.TabIndex = 3;
-            // 
+            //
             // lblUsername
-            // 
+            //
             lblUsername.AutoSize = true;
-            lblUsername.Location = new Point(46, 54);
+            lblUsername.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            lblUsername.Location = new Point(325, 125);
             lblUsername.Name = "lblUsername";
-            lblUsername.Size = new Size(75, 20);
+            lblUsername.Size = new Size(75, 19);
             lblUsername.TabIndex = 4;
             lblUsername.Text = "Username";
-            // 
+            //
             // lblPassword
-            // 
+            //
             lblPassword.AutoSize = true;
-            lblPassword.Location = new Point(46, 123);
+            lblPassword.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            lblPassword.Location = new Point(325, 175);
             lblPassword.Name = "lblPassword";
-            lblPassword.Size = new Size(70, 20);
+            lblPassword.Size = new Size(70, 19);
             lblPassword.TabIndex = 5;
             lblPassword.Text = "Password";
-            // 
+            //
             // FormLoginRegister
-            // 
+            //
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(240, 248, 255);
             ClientSize = new Size(800, 450);
+            Controls.Add(lblTitle);
             Controls.Add(lblPassword);
             Controls.Add(lblUsername);
             Controls.Add(txtPassword);
@@ -100,7 +127,7 @@
             Controls.Add(btnRegister);
             Controls.Add(btnLogin);
             Name = "FormLoginRegister";
-            Text = "Form1";
+            Text = "Quizmester - Login/Register";
             ResumeLayout(false);
             PerformLayout();
         }
@@ -113,5 +140,6 @@
         private TextBox txtPassword;
         private Label lblUsername;
         private Label lblPassword;
+        private Label lblTitle;
     }
 }

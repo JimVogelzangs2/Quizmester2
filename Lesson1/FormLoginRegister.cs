@@ -26,6 +26,7 @@ namespace Quizmester
                 if (result > 0)
                 {
                     MessageBox.Show("✅ Login geslaagd!");
+                    Program.Session.CurrentPlayerName = txtUsername.Text;
                     FormMain main = new FormMain();
                     main.Show();
                     this.Hide();
