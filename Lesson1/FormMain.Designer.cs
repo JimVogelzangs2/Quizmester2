@@ -34,6 +34,7 @@ namespace Quizmester
 			this.btnStartClashQuiz = new System.Windows.Forms.Button();
 			this.btnStartClashRoyaleQuiz = new System.Windows.Forms.Button();
 			this.btnStartAllQuiz = new System.Windows.Forms.Button();
+			this.btnAdmin = new System.Windows.Forms.Button();
 			this.dgvHighscores = new System.Windows.Forms.DataGridView();
 			this.lblTitle = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dgvHighscores)).BeginInit();
@@ -91,6 +92,20 @@ namespace Quizmester
 			this.btnStartAllQuiz.UseVisualStyleBackColor = false;
 			this.btnStartAllQuiz.Click += new System.EventHandler(this.btnStartAllQuiz_Click);
 
+			// btnAdmin
+			//
+			this.btnAdmin.BackColor = Color.FromArgb(220, 53, 69);
+			this.btnAdmin.FlatStyle = FlatStyle.Flat;
+			this.btnAdmin.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
+			this.btnAdmin.ForeColor = Color.White;
+			this.btnAdmin.Location = new System.Drawing.Point(50, 250);
+			this.btnAdmin.Name = "btnAdmin";
+			this.btnAdmin.Size = new System.Drawing.Size(220, 50);
+			this.btnAdmin.TabIndex = 4;
+			this.btnAdmin.Text = "Admin - Vragen Beheren";
+			this.btnAdmin.UseVisualStyleBackColor = false;
+			this.btnAdmin.Click += new System.EventHandler(this.btnAdmin_Click);
+
 			// dgvHighscores
 			//
 			this.dgvHighscores.AllowUserToAddRows = false;
@@ -120,6 +135,7 @@ namespace Quizmester
 			this.Controls.Add(this.btnStartClashQuiz);
 			this.Controls.Add(this.btnStartClashRoyaleQuiz);
 			this.Controls.Add(this.btnStartAllQuiz);
+			this.Controls.Add(this.btnAdmin);
 			this.Controls.Add(this.dgvHighscores);
 		          this.Name = "FormMain";
 		          this.Text = "Quizmester - Hoofdmenu";
@@ -132,9 +148,10 @@ namespace Quizmester
         #endregion
 
 		private System.Windows.Forms.Button btnStartClashQuiz;
-		private System.Windows.Forms.Button btnStartClashRoyaleQuiz;
-		private System.Windows.Forms.Button btnStartAllQuiz;
-		private System.Windows.Forms.DataGridView dgvHighscores;
-		private System.Windows.Forms.Label lblTitle;
+private System.Windows.Forms.Button btnStartClashRoyaleQuiz;
+private System.Windows.Forms.Button btnStartAllQuiz;
+private System.Windows.Forms.Button btnAdmin;
+private System.Windows.Forms.DataGridView dgvHighscores;
+private System.Windows.Forms.Label lblTitle;
     }
 }

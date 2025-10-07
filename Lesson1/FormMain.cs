@@ -84,5 +84,12 @@ namespace Quizmester
                 return result != null ? Convert.ToInt32(result) : -1;
             }
         }
+
+        private void btnAdmin_Click(object sender, EventArgs e)
+        {
+            FormAdminQuestions adminForm = new FormAdminQuestions();
+            adminForm.Show();
+            this.Hide();
+        }
     }
 }
