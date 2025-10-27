@@ -87,6 +87,12 @@ namespace Quizmester
 
         private void btnAdmin_Click(object sender, EventArgs e)
         {
+            if (Program.Session.CurrentPlayerName != "Admin")
+            {
+                MessageBox.Show("Alleen gebruikers met de naam 'Admin' hebben toegang tot deze functie!", "Toegang geweigerd", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             FormAdminQuestions adminForm = new FormAdminQuestions();
             adminForm.Show();
             this.Hide();

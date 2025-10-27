@@ -13,6 +13,7 @@ namespace Quizmester
         {
             InitializeComponent();
             LoadQuestions();
+            LoadUsers();
         }
 
         private void LoadQuestions()
@@ -25,6 +26,19 @@ namespace Quizmester
                 DataTable dt = new DataTable();
                 da.Fill(dt);
                 dgvQuestions.DataSource = dt;
+            }
+        }
+
+        private void LoadUsers()
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "SELECT PlayerID, PlayerName, Password FROM Player";
+                SqlDataAdapter da = new SqlDataAdapter(query, con);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                dgvUsers.DataSource = dt;
             }
         }
 
@@ -142,10 +156,119 @@ namespace Quizmester
             txtType.Text = "";
         }
 
+        private void ClearUserFields()
+        {
+            txtUserName.Text = "";
+            txtUserPassword.Text = "";
+        }
+
         private void btnBack_Click(object sender, EventArgs e)
         {
             new FormMain().Show();
             this.Close();
+        }
+
+        private void btnAddUser_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtUserName.Text) ||
+                string.IsNullOrWhiteSpace(txtUserPassword.Text))
+            {
+                MessageBox.Show("Vul gebruikersnaam en wachtwoord in.");
+                return;
+            }
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+
+                // Check if username already exists
+                string checkQuery = "SELECT COUNT(*) FROM Player WHERE PlayerName=@username";
+                SqlCommand checkCmd = new SqlCommand(checkQuery, con);
+                checkCmd.Parameters.AddWithValue("@username", txtUserName.Text);
+
+                int exists = (int)checkCmd.ExecuteScalar();
+
+                if (exists > 0)
+                {
+                    MessageBox.Show("Deze gebruikersnaam bestaat al.");
+                    return;
+                }
+
+                // Add new user
+                string insert = "INSERT INTO Player (PlayerName, Password) VALUES (@username, @password)";
+                using (SqlCommand cmd = new SqlCommand(insert, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", txtUserName.Text);
+                    cmd.Parameters.AddWithValue("@password", txtUserPassword.Text);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            LoadUsers();
+            ClearUserFields();
+        }
+
+        private void btnEditUser_Click(object sender, EventArgs e)
+        {
+            if (dgvUsers.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Selecteer een gebruiker om te bewerken.");
+                return;
+            }
+
+            int id = (int)dgvUsers.SelectedRows[0].Cells["PlayerID"].Value;
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string update = "UPDATE Player SET PlayerName=@username, Password=@password WHERE PlayerID=@id";
+                using (SqlCommand cmd = new SqlCommand(update, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", txtUserName.Text);
+                    cmd.Parameters.AddWithValue("@password", txtUserPassword.Text);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            LoadUsers();
+            ClearUserFields();
+        }
+
+        private void btnDeleteUser_Click(object sender, EventArgs e)
+        {
+            if (dgvUsers.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Selecteer een gebruiker om te verwijderen.");
+                return;
+            }
+
+            int id = (int)dgvUsers.SelectedRows[0].Cells["PlayerID"].Value;
+
+            var result = MessageBox.Show("Weet je zeker dat je deze gebruiker wilt verwijderen?", "Verwijderen", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+                    string delete = "DELETE FROM Player WHERE PlayerID=@id";
+                    using (SqlCommand cmd = new SqlCommand(delete, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                LoadUsers();
+                ClearUserFields();
+            }
+        }
+
+        private void dgvUsers_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvUsers.SelectedRows.Count > 0)
+            {
+                DataGridViewRow row = dgvUsers.SelectedRows[0];
+                txtUserName.Text = row.Cells["PlayerName"].Value.ToString();
+                txtUserPassword.Text = row.Cells["Password"].Value.ToString();
+            }
         }
     }
 }

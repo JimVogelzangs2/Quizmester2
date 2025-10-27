@@ -102,7 +102,7 @@ namespace Quizmester
 			this.btnAdmin.Name = "btnAdmin";
 			this.btnAdmin.Size = new System.Drawing.Size(220, 50);
 			this.btnAdmin.TabIndex = 4;
-			this.btnAdmin.Text = "Admin - Vragen Beheren";
+			this.btnAdmin.Text = "Admin Only";
 			this.btnAdmin.UseVisualStyleBackColor = false;
 			this.btnAdmin.Click += new System.EventHandler(this.btnAdmin_Click);
 

@@ -11,6 +11,7 @@ namespace Quizmester
         private int score = 0;
         private int remainingSeconds = 10; // per vraag
         private int quizRemainingSeconds = 120; // totale quiz
+        private bool skipUsed = false; // Track if skip has been used
 
         // Dynamische lijsten
         private List<string> questions = new List<string>();
@@ -40,6 +41,7 @@ namespace Quizmester
             }
 
             LoadQuestion();
+            btnSkip.Enabled = true; // Enable skip button at start
         }
 
         // 🔹 Vragen inladen uit DB
@@ -287,6 +289,26 @@ namespace Quizmester
         private void lblScore_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnSkip_Click(object sender, EventArgs e)
+        {
+            if (skipUsed)
+            {
+                MessageBox.Show("Je hebt de skip functie al gebruikt in deze quiz!");
+                return;
+            }
+
+            if (questionTimer != null)
+            {
+                questionTimer.Stop();
+            }
+
+            // Skip the question without changing score
+            skipUsed = true;
+            btnSkip.Enabled = false; // Disable the button after use
+            currentQuestionIndex++;
+            LoadQuestion();
         }
     }
 }

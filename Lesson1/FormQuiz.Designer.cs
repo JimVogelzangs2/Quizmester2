@@ -12,11 +12,12 @@ namespace Quizmester
         private RadioButton rbAnswer4;
         private Button btnNext;
         private Label lblScore;
-		private Label lblTimer;
-		private System.Windows.Forms.Timer questionTimer;
-		private Label lblQuizTimer;
-		private System.Windows.Forms.Timer quizTimer;
-		private Button btnStop;
+  private Label lblTimer;
+  private System.Windows.Forms.Timer questionTimer;
+  private Label lblQuizTimer;
+  private System.Windows.Forms.Timer quizTimer;
+  private Button btnStop;
+  private Button btnSkip;
 
         private void InitializeComponent()
         {
@@ -33,6 +34,7 @@ namespace Quizmester
             lblQuizTimer = new Label();
             quizTimer = new System.Windows.Forms.Timer(components);
             btnStop = new Button();
+            btnSkip = new Button();
             SuspendLayout();
             // 
             // lblQuestion
@@ -161,9 +163,24 @@ namespace Quizmester
             btnStop.Text = "Stop";
             btnStop.UseVisualStyleBackColor = false;
             btnStop.Click += btnStop_Click;
-            // 
+            //
+            // btnSkip
+            //
+            btnSkip.BackColor = Color.FromArgb(255, 193, 7);
+            btnSkip.FlatStyle = FlatStyle.Flat;
+            btnSkip.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnSkip.ForeColor = Color.Black;
+            btnSkip.Location = new Point(391, 410);
+            btnSkip.Margin = new Padding(3, 4, 3, 4);
+            btnSkip.Name = "btnSkip";
+            btnSkip.Size = new Size(137, 53);
+            btnSkip.TabIndex = 10;
+            btnSkip.Text = "Skip";
+            btnSkip.UseVisualStyleBackColor = false;
+            btnSkip.Click += btnSkip_Click;
+            //
             // FormQuiz
-            // 
+            //
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(248, 249, 250);
@@ -175,6 +192,7 @@ namespace Quizmester
             Controls.Add(rbAnswer4);
             Controls.Add(btnNext);
             Controls.Add(btnStop);
+            Controls.Add(btnSkip);
             Controls.Add(lblScore);
             Controls.Add(lblTimer);
             Controls.Add(lblQuizTimer);
