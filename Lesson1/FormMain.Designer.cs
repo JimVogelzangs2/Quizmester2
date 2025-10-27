@@ -33,11 +33,20 @@ namespace Quizmester
 		      {
 			this.btnStartClashQuiz = new System.Windows.Forms.Button();
 			this.btnStartClashRoyaleQuiz = new System.Windows.Forms.Button();
+			this.btnStartSpeedQuiz = new System.Windows.Forms.Button();
 			this.btnStartAllQuiz = new System.Windows.Forms.Button();
 			this.btnAdmin = new System.Windows.Forms.Button();
+			this.tabControlHighscores = new System.Windows.Forms.TabControl();
+			this.tabPageRegular = new System.Windows.Forms.TabPage();
+			this.tabPageSpeed = new System.Windows.Forms.TabPage();
 			this.dgvHighscores = new System.Windows.Forms.DataGridView();
+			this.dgvSpeedHighscores = new System.Windows.Forms.DataGridView();
 			this.lblTitle = new System.Windows.Forms.Label();
+			this.tabControlHighscores.SuspendLayout();
+			this.tabPageRegular.SuspendLayout();
+			this.tabPageSpeed.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dgvHighscores)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.dgvSpeedHighscores)).BeginInit();
 		          this.SuspendLayout();
 		          //
 		          // lblTitle
@@ -70,7 +79,7 @@ namespace Quizmester
 			this.btnStartClashRoyaleQuiz.FlatStyle = FlatStyle.Flat;
 			this.btnStartClashRoyaleQuiz.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
 			this.btnStartClashRoyaleQuiz.ForeColor = Color.White;
-			this.btnStartClashRoyaleQuiz.Location = new System.Drawing.Point(50, 130);
+			this.btnStartClashRoyaleQuiz.Location = new System.Drawing.Point(50, 190);
 			this.btnStartClashRoyaleQuiz.Name = "btnStartClashRoyaleQuiz";
 			this.btnStartClashRoyaleQuiz.Size = new System.Drawing.Size(220, 50);
 			this.btnStartClashRoyaleQuiz.TabIndex = 2;
@@ -84,7 +93,7 @@ namespace Quizmester
 			this.btnStartAllQuiz.FlatStyle = FlatStyle.Flat;
 			this.btnStartAllQuiz.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
 			this.btnStartAllQuiz.ForeColor = Color.White;
-			this.btnStartAllQuiz.Location = new System.Drawing.Point(50, 190);
+			this.btnStartAllQuiz.Location = new System.Drawing.Point(50, 250);
 			this.btnStartAllQuiz.Name = "btnStartAllQuiz";
 			this.btnStartAllQuiz.Size = new System.Drawing.Size(220, 50);
 			this.btnStartAllQuiz.TabIndex = 3;
@@ -92,13 +101,27 @@ namespace Quizmester
 			this.btnStartAllQuiz.UseVisualStyleBackColor = false;
 			this.btnStartAllQuiz.Click += new System.EventHandler(this.btnStartAllQuiz_Click);
 
+			// btnStartSpeedQuiz
+			//
+			this.btnStartSpeedQuiz.BackColor = Color.FromArgb(23, 162, 184);
+			this.btnStartSpeedQuiz.FlatStyle = FlatStyle.Flat;
+			this.btnStartSpeedQuiz.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
+			this.btnStartSpeedQuiz.ForeColor = Color.White;
+			this.btnStartSpeedQuiz.Location = new System.Drawing.Point(50, 130);
+			this.btnStartSpeedQuiz.Name = "btnStartSpeedQuiz";
+			this.btnStartSpeedQuiz.Size = new System.Drawing.Size(220, 50);
+			this.btnStartSpeedQuiz.TabIndex = 4;
+			this.btnStartSpeedQuiz.Text = "Speed Quiz";
+			this.btnStartSpeedQuiz.UseVisualStyleBackColor = false;
+			this.btnStartSpeedQuiz.Click += new System.EventHandler(this.btnStartSpeedQuiz_Click);
+
 			// btnAdmin
 			//
 			this.btnAdmin.BackColor = Color.FromArgb(220, 53, 69);
 			this.btnAdmin.FlatStyle = FlatStyle.Flat;
 			this.btnAdmin.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
 			this.btnAdmin.ForeColor = Color.White;
-			this.btnAdmin.Location = new System.Drawing.Point(50, 250);
+			this.btnAdmin.Location = new System.Drawing.Point(50, 310);
 			this.btnAdmin.Name = "btnAdmin";
 			this.btnAdmin.Size = new System.Drawing.Size(220, 50);
 			this.btnAdmin.TabIndex = 4;
@@ -106,6 +129,38 @@ namespace Quizmester
 			this.btnAdmin.UseVisualStyleBackColor = false;
 			this.btnAdmin.Click += new System.EventHandler(this.btnAdmin_Click);
 
+			// tabControlHighscores
+			//
+			this.tabControlHighscores.Controls.Add(this.tabPageRegular);
+			this.tabControlHighscores.Controls.Add(this.tabPageSpeed);
+			this.tabControlHighscores.Location = new System.Drawing.Point(300, 30);
+			this.tabControlHighscores.Name = "tabControlHighscores";
+			this.tabControlHighscores.SelectedIndex = 0;
+			this.tabControlHighscores.Size = new System.Drawing.Size(470, 380);
+			this.tabControlHighscores.TabIndex = 1;
+			//
+			// tabPageRegular
+			//
+			this.tabPageRegular.Controls.Add(this.dgvHighscores);
+			this.tabPageRegular.Location = new System.Drawing.Point(4, 24);
+			this.tabPageRegular.Name = "tabPageRegular";
+			this.tabPageRegular.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageRegular.Size = new System.Drawing.Size(462, 352);
+			this.tabPageRegular.TabIndex = 0;
+			this.tabPageRegular.Text = "Normale Quiz";
+			this.tabPageRegular.UseVisualStyleBackColor = true;
+			//
+			// tabPageSpeed
+			//
+			this.tabPageSpeed.Controls.Add(this.dgvSpeedHighscores);
+			this.tabPageSpeed.Location = new System.Drawing.Point(4, 24);
+			this.tabPageSpeed.Name = "tabPageSpeed";
+			this.tabPageSpeed.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageSpeed.Size = new System.Drawing.Size(462, 352);
+			this.tabPageSpeed.TabIndex = 1;
+			this.tabPageSpeed.Text = "Speed Quiz";
+			this.tabPageSpeed.UseVisualStyleBackColor = true;
+			//
 			// dgvHighscores
 			//
 			this.dgvHighscores.AllowUserToAddRows = false;
@@ -120,10 +175,31 @@ namespace Quizmester
 			this.dgvHighscores.ReadOnly = true;
 			this.dgvHighscores.RowHeadersVisible = false;
 			this.dgvHighscores.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-			this.dgvHighscores.Location = new System.Drawing.Point(300, 30);
+			this.dgvHighscores.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dgvHighscores.Location = new System.Drawing.Point(3, 3);
 			this.dgvHighscores.Name = "dgvHighscores";
-			this.dgvHighscores.Size = new System.Drawing.Size(470, 380);
-			this.dgvHighscores.TabIndex = 1;
+			this.dgvHighscores.Size = new System.Drawing.Size(456, 346);
+			this.dgvHighscores.TabIndex = 0;
+			//
+			// dgvSpeedHighscores
+			//
+			this.dgvSpeedHighscores.AllowUserToAddRows = false;
+			this.dgvSpeedHighscores.AllowUserToDeleteRows = false;
+			this.dgvSpeedHighscores.BackgroundColor = Color.White;
+			this.dgvSpeedHighscores.BorderStyle = BorderStyle.Fixed3D;
+			this.dgvSpeedHighscores.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(23, 162, 184);
+			this.dgvSpeedHighscores.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
+			this.dgvSpeedHighscores.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+			this.dgvSpeedHighscores.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dgvSpeedHighscores.GridColor = Color.LightGray;
+			this.dgvSpeedHighscores.ReadOnly = true;
+			this.dgvSpeedHighscores.RowHeadersVisible = false;
+			this.dgvSpeedHighscores.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+			this.dgvSpeedHighscores.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dgvSpeedHighscores.Location = new System.Drawing.Point(3, 3);
+			this.dgvSpeedHighscores.Name = "dgvSpeedHighscores";
+			this.dgvSpeedHighscores.Size = new System.Drawing.Size(456, 346);
+			this.dgvSpeedHighscores.TabIndex = 0;
 		          //
 		          // FormMain
 		          //
@@ -134,24 +210,34 @@ namespace Quizmester
 			this.Controls.Add(this.lblTitle);
 			this.Controls.Add(this.btnStartClashQuiz);
 			this.Controls.Add(this.btnStartClashRoyaleQuiz);
+			this.Controls.Add(this.btnStartSpeedQuiz);
 			this.Controls.Add(this.btnStartAllQuiz);
 			this.Controls.Add(this.btnAdmin);
-			this.Controls.Add(this.dgvHighscores);
-		          this.Name = "FormMain";
-		          this.Text = "Quizmester - Hoofdmenu";
+			this.Controls.Add(this.tabControlHighscores);
+			         this.Name = "FormMain";
+			         this.Text = "Quizmester - Hoofdmenu";
 			this.Load += new System.EventHandler(this.FormMain_Load);
+			this.tabControlHighscores.ResumeLayout(false);
+			this.tabPageRegular.ResumeLayout(false);
+			this.tabPageSpeed.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dgvHighscores)).EndInit();
-		          this.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.dgvSpeedHighscores)).EndInit();
+			         this.ResumeLayout(false);
 			this.PerformLayout();
 		      }
 
         #endregion
 
 		private System.Windows.Forms.Button btnStartClashQuiz;
-private System.Windows.Forms.Button btnStartClashRoyaleQuiz;
-private System.Windows.Forms.Button btnStartAllQuiz;
-private System.Windows.Forms.Button btnAdmin;
-private System.Windows.Forms.DataGridView dgvHighscores;
-private System.Windows.Forms.Label lblTitle;
+		private System.Windows.Forms.Button btnStartClashRoyaleQuiz;
+		private System.Windows.Forms.Button btnStartSpeedQuiz;
+		private System.Windows.Forms.Button btnStartAllQuiz;
+		private System.Windows.Forms.Button btnAdmin;
+		private System.Windows.Forms.TabControl tabControlHighscores;
+		private System.Windows.Forms.TabPage tabPageRegular;
+		private System.Windows.Forms.TabPage tabPageSpeed;
+		private System.Windows.Forms.DataGridView dgvHighscores;
+		private System.Windows.Forms.DataGridView dgvSpeedHighscores;
+		private System.Windows.Forms.Label lblTitle;
     }
 }

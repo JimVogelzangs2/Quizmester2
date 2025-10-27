@@ -164,8 +164,7 @@ namespace Quizmester
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            new FormMain().Show();
-            this.Close();
+            Application.Restart(); // Restart application to return to main menu
         }
 
         private void btnAddUser_Click(object sender, EventArgs e)
