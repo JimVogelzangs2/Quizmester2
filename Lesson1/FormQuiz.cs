@@ -12,6 +12,8 @@ namespace Quizmester
         private int remainingSeconds = 10; // per vraag
         private int quizRemainingSeconds = 120; // totale quiz
         private bool skipUsed = false; // Track if skip has been used
+        private bool fiftyFiftyUsed = false; // Track if 50/50 has been used
+        private int specialQuestionIndex = -1; // Index of the special question
 
         // Dynamische lijsten
         private List<string> questions = new List<string>();
@@ -40,8 +42,13 @@ namespace Quizmester
                 quizTimer.Start();
             }
 
+            // Select special question randomly within first 20 questions
+            Random rnd = new Random();
+            specialQuestionIndex = rnd.Next(0, Math.Min(20, questions.Count));
+
             LoadQuestion();
             btnSkip.Enabled = true; // Enable skip button at start
+            btnFiftyFifty.Enabled = true; // Enable 50/50 button at start
         }
 
         // 🔹 Vragen inladen uit DB
@@ -114,6 +121,32 @@ namespace Quizmester
                 rbAnswer3.Checked = false;
                 rbAnswer4.Checked = false;
 
+                // Re-enable all radio buttons for new question
+                rbAnswer1.Enabled = true;
+                rbAnswer2.Enabled = true;
+                rbAnswer3.Enabled = true;
+                rbAnswer4.Enabled = true;
+
+                // Check if this is the special question
+                bool isSpecialQuestion = (currentQuestionIndex == specialQuestionIndex);
+                if (isSpecialQuestion)
+                {
+                    // Visual indicator: change background color and font
+                    lblQuestion.BackColor = Color.Gold;
+                    lblQuestion.Font = new Font("Segoe UI", 14F, FontStyle.Bold | FontStyle.Italic);
+                    lblQuestion.ForeColor = Color.DarkRed;
+
+                    // Play sound effect (loud ping)
+                    System.Media.SystemSounds.Beep.Play();
+                }
+                else
+                {
+                    // Reset to normal appearance
+                    lblQuestion.BackColor = Color.FromArgb(255, 255, 224);
+                    lblQuestion.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+                    lblQuestion.ForeColor = Color.Black;
+                }
+
                 lblScore.Text = $"Score: {score}  |  Vraag {currentQuestionIndex + 1}/{questions.Count}";
 
                 // Reset en start de timer voor deze vraag
@@ -170,7 +203,15 @@ namespace Quizmester
 
             if (selectedAnswer == correctAnswers[currentQuestionIndex])
             {
-                score += 5; // goed antwoord: +5
+                // Extra points for special question
+                if (currentQuestionIndex == specialQuestionIndex)
+                {
+                    score += 10; // special question: +10
+                }
+                else
+                {
+                    score += 5; // goed antwoord: +5
+                }
             }
             else
             {
@@ -309,6 +350,51 @@ namespace Quizmester
             btnSkip.Enabled = false; // Disable the button after use
             currentQuestionIndex++;
             LoadQuestion();
+        }
+
+        private void btnFiftyFifty_Click(object sender, EventArgs e)
+        {
+            if (fiftyFiftyUsed)
+            {
+                MessageBox.Show("Je hebt de 50/50 functie al gebruikt in deze quiz!");
+                return;
+            }
+
+            // Get the correct answer index
+            int correctIndex = correctAnswers[currentQuestionIndex];
+
+            // Create list of wrong answer indices
+            List<int> wrongIndices = new List<int>();
+            for (int i = 0; i < 4; i++)
+            {
+                if (i != correctIndex)
+                {
+                    wrongIndices.Add(i);
+                }
+            }
+
+            // Randomly select one wrong answer to keep
+            Random rnd = new Random();
+            int keepWrongIndex = wrongIndices[rnd.Next(wrongIndices.Count)];
+
+            // Disable two wrong answers, keep correct and one wrong
+            for (int i = 0; i < 4; i++)
+            {
+                if (i != correctIndex && i != keepWrongIndex)
+                {
+                    // Disable the radio button
+                    switch (i)
+                    {
+                        case 0: rbAnswer1.Enabled = false; rbAnswer1.Checked = false; break;
+                        case 1: rbAnswer2.Enabled = false; rbAnswer2.Checked = false; break;
+                        case 2: rbAnswer3.Enabled = false; rbAnswer3.Checked = false; break;
+                        case 3: rbAnswer4.Enabled = false; rbAnswer4.Checked = false; break;
+                    }
+                }
+            }
+
+            fiftyFiftyUsed = true;
+            btnFiftyFifty.Enabled = false; // Disable the button after use
         }
     }
 }

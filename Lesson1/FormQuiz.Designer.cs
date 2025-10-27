@@ -18,6 +18,7 @@ namespace Quizmester
   private System.Windows.Forms.Timer quizTimer;
   private Button btnStop;
   private Button btnSkip;
+  private Button btnFiftyFifty;
 
         private void InitializeComponent()
         {
@@ -35,6 +36,7 @@ namespace Quizmester
             quizTimer = new System.Windows.Forms.Timer(components);
             btnStop = new Button();
             btnSkip = new Button();
+            btnFiftyFifty = new Button();
             SuspendLayout();
             // 
             // lblQuestion
@@ -179,6 +181,21 @@ namespace Quizmester
             btnSkip.UseVisualStyleBackColor = false;
             btnSkip.Click += btnSkip_Click;
             //
+            // btnFiftyFifty
+            //
+            btnFiftyFifty.BackColor = Color.FromArgb(255, 140, 0);
+            btnFiftyFifty.FlatStyle = FlatStyle.Flat;
+            btnFiftyFifty.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnFiftyFifty.ForeColor = Color.White;
+            btnFiftyFifty.Location = new Point(553, 410);
+            btnFiftyFifty.Margin = new Padding(3, 4, 3, 4);
+            btnFiftyFifty.Name = "btnFiftyFifty";
+            btnFiftyFifty.Size = new Size(137, 53);
+            btnFiftyFifty.TabIndex = 11;
+            btnFiftyFifty.Text = "50/50";
+            btnFiftyFifty.UseVisualStyleBackColor = false;
+            btnFiftyFifty.Click += btnFiftyFifty_Click;
+            //
             // FormQuiz
             //
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -193,6 +210,7 @@ namespace Quizmester
             Controls.Add(btnNext);
             Controls.Add(btnStop);
             Controls.Add(btnSkip);
+            Controls.Add(btnFiftyFifty);
             Controls.Add(lblScore);
             Controls.Add(lblTimer);
             Controls.Add(lblQuizTimer);
