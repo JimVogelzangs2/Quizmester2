@@ -1,14 +1,18 @@
-using System;
-using System.Data;
-using System.Windows.Forms;
-using Microsoft.Data.SqlClient;
+/* Admin formulier: beheert vragen en gebruikers in database */
+
+using System; /* Basis systeemfuncties */
+using System.Data; /* DataTable etc. */
+using System.Windows.Forms; /* Windows Forms */
+using Microsoft.Data.SqlClient; /* Database verbindingen */
 
 namespace Quizmester
 {
     public partial class FormAdminQuestions : Form
     {
+        /* Database verbinding string */
         private string connectionString = "Server=localhost\\SQLEXPRESS08;Database=NewDatabaseName;Trusted_Connection=True;TrustServerCertificate=True;";
 
+        /* Constructor: initialiseert admin formulier */
         public FormAdminQuestions()
         {
             InitializeComponent();
@@ -16,6 +20,7 @@ namespace Quizmester
             LoadUsers();
         }
 
+        /* Laadt vragen in DataGridView */
         private void LoadQuestions()
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -29,6 +34,7 @@ namespace Quizmester
             }
         }
 
+        /* Laadt gebruikers in DataGridView */
         private void LoadUsers()
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -42,6 +48,7 @@ namespace Quizmester
             }
         }
 
+        /* Voeg nieuwe vraag toe aan database */
         private void btnAdd_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtQuestion.Text) ||
@@ -74,6 +81,7 @@ namespace Quizmester
             ClearFields();
         }
 
+        /* Bewerk geselecteerde vraag */
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (dgvQuestions.SelectedRows.Count == 0)
@@ -104,6 +112,7 @@ namespace Quizmester
             ClearFields();
         }
 
+        /* Verwijder geselecteerde vraag */
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvQuestions.SelectedRows.Count == 0)
@@ -132,6 +141,7 @@ namespace Quizmester
             }
         }
 
+        /* Vul tekstvelden bij selectie vraag */
         private void dgvQuestions_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvQuestions.SelectedRows.Count > 0)
@@ -146,6 +156,7 @@ namespace Quizmester
             }
         }
 
+        /* Maak vraag tekstvelden leeg */
         private void ClearFields()
         {
             txtQuestion.Text = "";
@@ -156,17 +167,20 @@ namespace Quizmester
             txtType.Text = "";
         }
 
+        /* Maak gebruiker tekstvelden leeg */
         private void ClearUserFields()
         {
             txtUserName.Text = "";
             txtUserPassword.Text = "";
         }
 
+        /* Terug naar hoofdmenu */
         private void btnBack_Click(object sender, EventArgs e)
         {
-            Application.Restart(); // Restart application to return to main menu
+            Application.Restart(); /* Herstart app naar hoofdmenu */
         }
 
+        /* Voeg nieuwe gebruiker toe */
         private void btnAddUser_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtUserName.Text) ||
@@ -180,7 +194,7 @@ namespace Quizmester
             {
                 con.Open();
 
-                // Check if username already exists
+                /* Controleer of gebruikersnaam bestaat */
                 string checkQuery = "SELECT COUNT(*) FROM Player WHERE PlayerName=@username";
                 SqlCommand checkCmd = new SqlCommand(checkQuery, con);
                 checkCmd.Parameters.AddWithValue("@username", txtUserName.Text);
@@ -193,7 +207,7 @@ namespace Quizmester
                     return;
                 }
 
-                // Add new user
+                /* Voeg nieuwe gebruiker toe */
                 string insert = "INSERT INTO Player (PlayerName, Password) VALUES (@username, @password)";
                 using (SqlCommand cmd = new SqlCommand(insert, con))
                 {
@@ -206,6 +220,7 @@ namespace Quizmester
             ClearUserFields();
         }
 
+        /* Bewerk geselecteerde gebruiker */
         private void btnEditUser_Click(object sender, EventArgs e)
         {
             if (dgvUsers.SelectedRows.Count == 0)
@@ -232,6 +247,7 @@ namespace Quizmester
             ClearUserFields();
         }
 
+        /* Verwijder geselecteerde gebruiker */
         private void btnDeleteUser_Click(object sender, EventArgs e)
         {
             if (dgvUsers.SelectedRows.Count == 0)
@@ -260,6 +276,7 @@ namespace Quizmester
             }
         }
 
+        /* Vul tekstvelden bij selectie gebruiker */
         private void dgvUsers_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvUsers.SelectedRows.Count > 0)

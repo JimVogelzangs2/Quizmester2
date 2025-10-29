@@ -1,55 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using Microsoft.Data.SqlClient;
+﻿/* Quiz formulier: beheert quiz logica, vragen laden, timers, scores */
+
+using System; /* Basis systeemfuncties */
+using System.Collections.Generic; /* Voor lijsten */
+using System.Windows.Forms; /* Windows Forms */
+using Microsoft.Data.SqlClient; /* Database verbindingen */
 
 namespace Quizmester
 {
     public partial class FormQuiz : Form
     {
-        private int currentQuestionIndex = 0;
-        private int score = 0;
-        private int remainingSeconds = 10; // per vraag
-        private int quizRemainingSeconds = 120; // totale quiz
-        private bool skipUsed = false; // Track if skip has been used
-        private bool fiftyFiftyUsed = false; // Track if 50/50 has been used
-        private int specialQuestionIndex = -1; // Index of the special question
-        private bool isSpeedQuiz = false; // Track if this is speed quiz mode
-        private int correctAnswersCount = 0; // Count correct answers for speed quiz
-        private int speedQuizStartTime = 0; // Start time for speed quiz
-        private int speedQuizPenaltyTime = 0; // Penalty time for wrong answers
+        /* Variabelen voor quiz staat */
+        private int currentQuestionIndex = 0; /* Huidige vraag index */
+        private int score = 0; /* Huidige score */
+        private int remainingSeconds = 10; /* Seconden per vraag */
+        private int quizRemainingSeconds = 120; /* Totale quiz tijd */
+        private bool skipUsed = false; /* Skip gebruikt? */
+        private bool fiftyFiftyUsed = false; /* 50/50 gebruikt? */
+        private int specialQuestionIndex = -1; /* Speciale vraag index */
+        private bool isSpeedQuiz = false; /* Is speed quiz? */
+        private int correctAnswersCount = 0; /* Correcte antwoorden teller */
+        private int speedQuizStartTime = 0; /* Starttijd speed quiz */
+        private int speedQuizPenaltyTime = 0; /* Penalty tijd */
 
-        // Dynamische lijsten
-        private List<string> questions = new List<string>();
-        private List<string[]> answers = new List<string[]>();
-        private List<int> correctAnswers = new List<int>();
+        /* Dynamische lijsten voor vragen en antwoorden */
+        private List<string> questions = new List<string>(); /* Vragen lijst */
+        private List<string[]> answers = new List<string[]>(); /* Antwoorden arrays */
+        private List<int> correctAnswers = new List<int>(); /* Correcte antwoord indices */
 
-        // 🔹 jouw database connectie (pas Database= aan)
+        /* Database verbinding string */
         private string connectionString = "Server=localhost\\SQLEXPRESS08;Database=NewDatabaseName;Trusted_Connection=True;TrustServerCertificate=True;";
-        private string currentQuizType = string.Empty;
+        private string currentQuizType = string.Empty; /* Huidig quiz type */
 
-        // Start een quiz op basis van het QuestionType (bv. "Clash of Clans")
+        /* Constructor: initialiseert quiz gebaseerd op type */
         public FormQuiz(string quizType)
         {
             InitializeComponent();
             currentQuizType = quizType;
             LoadQuestionsFromDatabase(quizType);
 
-            // Check if this is speed quiz
+            /* Controleer of het speed quiz is */
             isSpeedQuiz = quizType.Equals("SPEED", StringComparison.OrdinalIgnoreCase);
 
             if (isSpeedQuiz)
             {
-                // Speed quiz setup
+                /* Speed quiz setup */
                 speedQuizStartTime = Environment.TickCount;
                 lblQuizTimer.Text = "00:00";
-                lblTimer.Visible = false; // Hide question timer
-                btnSkip.Visible = false; // Hide skip button
-                btnFiftyFifty.Visible = false; // Hide 50/50 button
+                lblTimer.Visible = false; /* Verberg vraag timer */
+                btnSkip.Visible = false; /* Verberg skip knop */
+                btnFiftyFifty.Visible = false; /* Verberg 50/50 knop */
                 correctAnswersCount = 0;
                 speedQuizPenaltyTime = 0;
 
-                // Start the quiz timer for speed quiz
+                /* Start quiz timer voor speed quiz */
                 if (quizTimer != null)
                 {
                     quizTimer.Stop();
@@ -58,7 +61,7 @@ namespace Quizmester
             }
             else
             {
-                // Normal quiz setup
+                /* Normale quiz setup */
                 quizRemainingSeconds = 120;
                 if (lblQuizTimer != null)
                 {
@@ -70,18 +73,18 @@ namespace Quizmester
                     quizTimer.Start();
                 }
 
-                // Select special question randomly within first 20 questions
+                /* Selecteer speciale vraag random in eerste 20 */
                 Random rnd = new Random();
                 specialQuestionIndex = rnd.Next(0, Math.Min(20, questions.Count));
 
-                btnSkip.Enabled = true; // Enable skip button at start
-                btnFiftyFifty.Enabled = true; // Enable 50/50 button at start
+                btnSkip.Enabled = true; /* Enable skip knop */
+                btnFiftyFifty.Enabled = true; /* Enable 50/50 knop */
             }
 
             LoadQuestion();
         }
 
-        // 🔹 Vragen inladen uit DB
+        /* Laadt vragen uit database gebaseerd op quiz type */
         private void LoadQuestionsFromDatabase(string quizType)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -91,7 +94,7 @@ namespace Quizmester
                 SqlCommand cmd;
                 if (string.Equals(quizType, "ALL", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Alle vragen uit alle quiztypes
+                    /* Alle vragen uit alle quiztypes */
                     query = @"SELECT Question, CorrectAnswer, FalseAnswerOne, FalseAnswerTwo, FalseAnswerThree
                               FROM Questions
                               ORDER BY NEWID()";
@@ -99,7 +102,7 @@ namespace Quizmester
                 }
                 else if (string.Equals(quizType, "SPEED", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Speed quiz: gebruik alle vragen
+                    /* Speed quiz: gebruik alle vragen */
                     query = @"SELECT Question, CorrectAnswer, FalseAnswerOne, FalseAnswerTwo, FalseAnswerThree
                               FROM Questions
                               ORDER BY NEWID()";
@@ -107,7 +110,7 @@ namespace Quizmester
                 }
                 else
                 {
-                    // Alleen vragen voor het gekozen type
+                    /* Alleen vragen voor het gekozen type */
                     query = @"SELECT Question, CorrectAnswer, FalseAnswerOne, FalseAnswerTwo, FalseAnswerThree
                               FROM Questions
                               WHERE QuestionType = @quizType
@@ -129,7 +132,7 @@ namespace Quizmester
 
                     questions.Add(vraag);
 
-                    // Mix antwoorden
+                    /* Mix antwoorden random */
                     var allAnswers = new List<string> { correct, f1, f2, f3 };
                     for (int i = allAnswers.Count - 1; i > 0; i--)
                     {
@@ -143,17 +146,17 @@ namespace Quizmester
             }
         }
 
-        // 🔹 Vraag laden
+        /* Laadt volgende vraag of eindigt quiz */
         private void LoadQuestion()
         {
-            // For speed quiz, only continue if we haven't reached 10 correct answers yet
+            /* Voor speed quiz: stop als 10 correct bereikt */
             if (isSpeedQuiz && correctAnswersCount >= 10)
             {
-                // Speed quiz completed
+                /* Speed quiz compleet */
                 int totalTime = (Environment.TickCount - speedQuizStartTime) / 1000 + speedQuizPenaltyTime;
                 MessageBox.Show($"🎉 Speed Quiz compleet! Tijd: {totalTime} seconden\nKlik op OK om door te gaan.", "Speed Quiz afgerond", MessageBoxButtons.OK);
                 SaveSpeedHighscore(totalTime);
-                this.Close(); // Close the quiz form to return to main menu
+                this.Close(); /* Sluit quiz formulier */
                 return;
             }
 
@@ -170,27 +173,27 @@ namespace Quizmester
                 rbAnswer3.Checked = false;
                 rbAnswer4.Checked = false;
 
-                // Re-enable all radio buttons for new question
+                /* Heractiveer alle radio buttons */
                 rbAnswer1.Enabled = true;
                 rbAnswer2.Enabled = true;
                 rbAnswer3.Enabled = true;
                 rbAnswer4.Enabled = true;
 
-                // Check if this is the special question
+                /* Controleer of dit speciale vraag is */
                 bool isSpecialQuestion = (currentQuestionIndex == specialQuestionIndex);
                 if (isSpecialQuestion)
                 {
-                    // Visual indicator: change background color and font
+                    /* Visuele indicator: verander kleur en font */
                     lblQuestion.BackColor = Color.Gold;
                     lblQuestion.Font = new Font("Segoe UI", 14F, FontStyle.Bold | FontStyle.Italic);
                     lblQuestion.ForeColor = Color.DarkRed;
 
-                    // Play sound effect (loud ping)
+                    /* Speel geluid effect */
                     System.Media.SystemSounds.Beep.Play();
                 }
                 else
                 {
-                    // Reset to normal appearance
+                    /* Reset naar normaal uiterlijk */
                     lblQuestion.BackColor = Color.FromArgb(255, 255, 224);
                     lblQuestion.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
                     lblQuestion.ForeColor = Color.Black;
@@ -207,7 +210,7 @@ namespace Quizmester
 
                 if (!isSpeedQuiz)
                 {
-                    // Reset en start de timer voor deze vraag
+                    /* Reset en start vraag timer */
                     remainingSeconds = 10;
                     if (lblTimer != null)
                     {
@@ -233,7 +236,7 @@ namespace Quizmester
 
                 if (!isSpeedQuiz)
                 {
-                    // Bonus: +1 per resterende seconde van de quiz
+                    /* Bonus: +1 per resterende seconde */
                     int finalScore = score + Math.Max(quizRemainingSeconds, 0);
                     score = finalScore;
                     SaveHighscore();
@@ -241,15 +244,15 @@ namespace Quizmester
                 }
                 else
                 {
-                    // Speed quiz: show message that all questions are done but not enough correct answers
+                    /* Speed quiz: niet genoeg correcte antwoorden */
                     MessageBox.Show($"❌ Speed Quiz niet compleet! Je hebt {correctAnswersCount}/10 correcte antwoorden.\nKlik op OK om door te gaan.", "Speed Quiz gefaald", MessageBoxButtons.OK);
                 }
 
-                this.Close(); // Close the quiz form to return to main menu
+                this.Close(); /* Sluit quiz formulier */
             }
         }
 
-        // 🔹 Volgende-knop
+        /* Volgende knop: controleert antwoord en gaat verder */
         private void btnNext_Click(object sender, EventArgs e)
         {
             int selectedAnswer = -1;
@@ -278,17 +281,17 @@ namespace Quizmester
                     correctAnswersCount++;
                     if (correctAnswersCount >= 10)
                     {
-                        // Speed quiz completed
+                        /* Speed quiz compleet */
                         int totalTime = (Environment.TickCount - speedQuizStartTime) / 1000 + speedQuizPenaltyTime;
                         MessageBox.Show($"🎉 Speed Quiz compleet! Tijd: {totalTime} seconden\nKlik op OK om door te gaan.", "Speed Quiz afgerond", MessageBoxButtons.OK);
                         SaveSpeedHighscore(totalTime);
-                        this.Close(); // Close the quiz form to return to main menu
+                        this.Close(); /* Sluit quiz formulier */
                         return;
                     }
                 }
                 else
                 {
-                    // Add 5 seconds penalty
+                    /* Voeg 5 seconden penalty toe */
                     speedQuizPenaltyTime += 5;
                 }
             }
@@ -296,19 +299,19 @@ namespace Quizmester
             {
                 if (isCorrect)
                 {
-                    // Extra points for special question
+                    /* Extra punten voor speciale vraag */
                     if (currentQuestionIndex == specialQuestionIndex)
                     {
-                        score += 10; // special question: +10
+                        score += 10; /* Speciale vraag: +10 */
                     }
                     else
                     {
-                        score += 5; // goed antwoord: +5
+                        score += 5; /* Goed antwoord: +5 */
                     }
                 }
                 else
                 {
-                    score -= 3; // fout antwoord: -3
+                    score -= 3; /* Fout antwoord: -3 */
                 }
             }
 
@@ -316,6 +319,7 @@ namespace Quizmester
             LoadQuestion();
         }
 
+        /* Vraag timer tick: aftellen per vraag */
         private void questionTimer_Tick(object sender, EventArgs e)
         {
             if (!isSpeedQuiz)
@@ -332,13 +336,14 @@ namespace Quizmester
                     {
                         questionTimer.Stop();
                     }
-                    // Tijd is op: geen punten en ga door
+                    /* Tijd op: geen punten, ga door */
                     currentQuestionIndex++;
                     LoadQuestion();
                 }
             }
         }
 
+        /* Form sluiten: cleanup timers */
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             if (questionTimer != null)
@@ -354,6 +359,7 @@ namespace Quizmester
             base.OnFormClosed(e);
         }
 
+        /* Quiz timer tick: totale quiz tijd */
         private void quizTimer_Tick(object sender, EventArgs e)
         {
             if (!isSpeedQuiz)
@@ -365,22 +371,23 @@ namespace Quizmester
                 }
                 if (quizRemainingSeconds <= 0)
                 {
-                    // Stop beide timers en beëindig de quiz wegens tijd op
+                    /* Stop timers en eindig quiz */
                     if (questionTimer != null) questionTimer.Stop();
                     if (quizTimer != null) quizTimer.Stop();
-                    // Geen bonus (0 seconden over)
+                    /* Geen bonus tijd */
                     SaveHighscore();
                     MessageBox.Show($"⏰ Tijd is op! Eindscore: {score} (vragen: {questions.Count})\nKlik op OK om door te gaan.", "Tijd op", MessageBoxButtons.OK);
-                    this.Close(); // Close the quiz form to return to main menu
+                    this.Close(); /* Sluit quiz formulier */
                 }
             }
             else
             {
-                // Update speed quiz timer display
+                /* Update speed quiz timer display */
                 lblQuizTimer.Text = GetElapsedTime();
             }
         }
 
+        /* Slaat normale highscore op in database */
         private void SaveHighscore()
         {
             try
@@ -413,6 +420,7 @@ namespace Quizmester
             catch { }
         }
 
+        /* Slaat speed quiz highscore op in database */
         private void SaveSpeedHighscore(int time)
         {
             try
@@ -443,6 +451,7 @@ namespace Quizmester
             catch { }
         }
 
+        /* Geeft verstreken tijd voor speed quiz */
         private string GetElapsedTime()
         {
             int elapsed = (Environment.TickCount - speedQuizStartTime) / 1000 + speedQuizPenaltyTime;
@@ -451,6 +460,7 @@ namespace Quizmester
             return $"{minutes:00}:{seconds:00}";
         }
 
+        /* Stop knop: bevestiging om quiz te stoppen */
         private void btnStop_Click(object sender, EventArgs e)
         {
             if (questionTimer != null) questionTimer.Stop();
@@ -458,21 +468,23 @@ namespace Quizmester
             var result = MessageBox.Show("Weet je zeker dat je wilt stoppen?", "Quiz stoppen", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                this.Close(); // Close the quiz form to return to main menu
+                this.Close(); /* Sluit quiz formulier */
             }
             else
             {
-                // Ga door waar je was
+                /* Ga door waar je was */
                 if (questionTimer != null) questionTimer.Start();
                 if (quizTimer != null) quizTimer.Start();
             }
         }
 
+        /* Leeg event handler voor score label */
         private void lblScore_Click(object sender, EventArgs e)
         {
 
         }
 
+        /* Skip knop: sla vraag over zonder score verandering */
         private void btnSkip_Click(object sender, EventArgs e)
         {
             if (skipUsed)
@@ -486,13 +498,14 @@ namespace Quizmester
                 questionTimer.Stop();
             }
 
-            // Skip the question without changing score
+            /* Skip vraag zonder score verandering */
             skipUsed = true;
-            btnSkip.Enabled = false; // Disable the button after use
+            btnSkip.Enabled = false; /* Disable na gebruik */
             currentQuestionIndex++;
             LoadQuestion();
         }
 
+        /* 50/50 knop: helpt door twee foute antwoorden uit te schakelen */
         private void btnFiftyFifty_Click(object sender, EventArgs e)
         {
             if (fiftyFiftyUsed)
@@ -501,10 +514,10 @@ namespace Quizmester
                 return;
             }
 
-            // Get the correct answer index
+            /* Haal index van correct antwoord (0-3 voor rbAnswer1-4) */
             int correctIndex = correctAnswers[currentQuestionIndex];
 
-            // Create list of wrong answer indices
+            /* Maak lijst van indices van foute antwoorden (0-3) */
             List<int> wrongIndices = new List<int>();
             for (int i = 0; i < 4; i++)
             {
@@ -514,16 +527,16 @@ namespace Quizmester
                 }
             }
 
-            // Randomly select one wrong answer to keep
+            /* Kies random één fout antwoord om te houden (van de 3 foute) */
             Random rnd = new Random();
             int keepWrongIndex = wrongIndices[rnd.Next(wrongIndices.Count)];
 
-            // Disable two wrong answers, keep correct and one wrong
+            /* Schakel twee foute antwoorden uit, houd correct + 1 fout antwoord */
             for (int i = 0; i < 4; i++)
             {
                 if (i != correctIndex && i != keepWrongIndex)
                 {
-                    // Disable the radio button
+                    /* Disable radio button voor foute antwoorden */
                     switch (i)
                     {
                         case 0: rbAnswer1.Enabled = false; rbAnswer1.Checked = false; break;
@@ -535,7 +548,7 @@ namespace Quizmester
             }
 
             fiftyFiftyUsed = true;
-            btnFiftyFifty.Enabled = false; // Disable the button after use
+            btnFiftyFifty.Enabled = false; /* Kan niet meer gebruikt worden */
         }
     }
 }

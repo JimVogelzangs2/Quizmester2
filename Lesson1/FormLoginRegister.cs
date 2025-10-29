@@ -1,16 +1,22 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
-//test
+﻿/* Login/registratie formulier: beheert gebruikers authenticatie */
+
+using System.Data; /* Data handling */
+using Microsoft.Data.SqlClient; /* Database verbindingen */
+
 namespace Quizmester
 {
     public partial class FormLoginRegister : Form
     {
+        /* Database verbinding string */
         string connectionString = "Server=localhost\\SQLEXPRESS08;Database=NewDatabaseName;Trusted_Connection=True;TrustServerCertificate=True;";
+
+        /* Constructor: initialiseert login formulier */
         public FormLoginRegister()
         {
             InitializeComponent();
         }
 
+        /* Login knop: controleert credentials en opent hoofdmenu */
         private void btnLogin_Click(object sender, EventArgs e)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -38,13 +44,14 @@ namespace Quizmester
             }
         }
 
+        /* Registratie knop: controleert unieke naam en voegt gebruiker toe */
         private void btnRegister_Click(object sender, EventArgs e)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
 
-                // Eerst checken of de naam al bestaat
+                /* Controleer of gebruikersnaam al bestaat */
                 string checkQuery = "SELECT COUNT(*) FROM Player WHERE PlayerName=@username";
                 SqlCommand checkCmd = new SqlCommand(checkQuery, con);
                 checkCmd.Parameters.AddWithValue("@username", txtUsername.Text);
@@ -57,7 +64,7 @@ namespace Quizmester
                     return;
                 }
 
-                // Als hij nog niet bestaat → registrere
+                /* Voeg nieuwe gebruiker toe */
                 string insertQuery = "INSERT INTO Player (PlayerName, Password) VALUES (@username, @password)";
                 SqlCommand insertCmd = new SqlCommand(insertQuery, con);
                 insertCmd.Parameters.AddWithValue("@username", txtUsername.Text);
